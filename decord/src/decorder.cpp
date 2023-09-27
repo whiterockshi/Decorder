@@ -288,6 +288,8 @@ int main(int argc, char** argv) {
   tree->Branch("eventID", &eventID,    "event/L");
   tree->Branch("hgadc",   &hgadc,  "value[64]/I");
   tree->Branch("lgadc",   &lgadc,  "value[64]/I");
+  tree->Branch("ncycle", &ncycle, "ncycle/L");
+  tree->Branch("ntdc", &ntdc, "ntdc/L");
   
   UInt_t data_big_endian;
   UInt_t data;

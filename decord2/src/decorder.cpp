@@ -262,12 +262,12 @@ int main(int argc, char** argv) {
 
   string dat_filename = string(argv[1]);
 
-  double mean = 0;
-  double RMS = 0;
-  int cn; // ?
-  int cn_; // ?
-  int ch; // ?
-  bool isRO;
+  //double mean = 0;
+  //double RMS = 0;
+  //int cn; // ?
+  //int cn_; // ?
+  //int ch; // ?
+  //bool isRO;
 
   ifstream f_dat(dat_filename.c_str(),ios::binary);
   if (!f_dat.is_open()) {
@@ -284,10 +284,14 @@ int main(int argc, char** argv) {
   ADC hgadc;
   ADC lgadc;
   long eventID;
+
+  stp this_stp;
   
   tree->Branch("eventID", &eventID,    "event/L");
   tree->Branch("hgadc",   &hgadc,  "value[64]/I");
   tree->Branch("lgadc",   &lgadc,  "value[64]/I");
+  tree->Branch("cyclenum", &this_stp.ncycle, "value/I");
+  tree->Branch("tdcvalue", &this_stp.ntdc, "value/I");
   
   UInt_t data_big_endian;
   UInt_t data;
@@ -295,11 +299,11 @@ int main(int argc, char** argv) {
   UInt_t scalerValues[69];
   UInt_t scalerValuesArray[10][69];
   UInt_t events = 0;
-  UInt_t counter = 0;
+  //UInt_t counter = 0;
 
   sm_ sm = first;
   vector<stp> stp_vec;
-  stp this_stp;
+  //stp this_stp;
 
   while (!f_dat.eof()) {
     f_dat.read((char*)&data_big_endian, sizeof(int));
@@ -315,6 +319,7 @@ int main(int argc, char** argv) {
       if (debug>2)
 	cout << TString::Format("Regacy Format Header:0x0ffff0.., data_length= %dwords, event%d\n",data_length,events+1);
       eventID = events++;
+      
       sm = first;
       if (events%1000==0)
 	cout << "reading events#:" << events << endl;
@@ -432,7 +437,7 @@ int main(int argc, char** argv) {
 	this_stp.cmd1bit = (data & 0x00010000)>>16;
 	sm = second;
       } else if (sm == second) {
-	this_stp.ncycle = data & 0x00ffffff;
+	this_stp.ncycle = data & 0x00ffffff;//by attching f for 6, this_stp.ncycle gets value of cyclenum.
 	sm = third;
       } else if (sm == third) {
 	this_stp.ntdc = data & 0x00ffffff;
