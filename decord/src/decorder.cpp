@@ -296,6 +296,7 @@ int main(int argc, char** argv) {
   UInt_t scalerValuesArray[10][69];
   UInt_t events = 0;
   UInt_t counter = 0;
+  int WrongStpCount = 0;
 
   sm_ sm = first;
   vector<stp> stp_vec;
@@ -424,7 +425,7 @@ int main(int argc, char** argv) {
 	}
       }
       continue;
-    } else if (isStp(data)) { //STP
+    }/* else if (isStp(data)) { //STP
       if (debug>2)
 	cout << TString::Format("STP, data=%08x\n",data);
       if (sm == first) {
@@ -449,6 +450,66 @@ int main(int argc, char** argv) {
       cerr << "Unknown data type" << endl;
     }
     cout << "Fill Tree" << endl;
+    tree->Fill();*/
+    else if (isStp(data)) { //STP
+
+      if (debug>2)
+
+  cout << TString::Format("STP, data=%08x\n",data);
+
+      if (sm == first) {
+  //cout << "first" << endl;
+  this_stp.nevent = data & 0x00000fff;
+
+  this_stp.cmd1bit = (data & 0x00010000)>>16;
+  sm = second;
+
+      } else if (sm == second) {
+  //cout << "second" << endl;
+  this_stp.ncycle = data & 0x00ffffff;
+  sm = third;
+
+      } else if (sm == third) {
+  //cout << "third" << endl;
+  this_stp.ntdc = data & 0x00ffffff;
+  sm = other;
+
+  //stp_vec.push_back(this_stp);
+
+      } if (sm == other) { // STPデータが最後の状態であることを確認
+        //cout << "other" << endl;
+        if (eventID < 9999){
+          stp_vec.push_back(this_stp);
+          tree->Fill();
+        }
+
+        else{
+          stp_vec.push_back(this_stp);
+          tree->Fill();
+          break;
+        }
+        
+
+        //tree->Fill(); // STPデータが来たときにFillを実行
+
+    } else {
+  cerr << "Wrong STP data: "<<data<<endl;
+      }
+
+      continue;
+
+    } else {
+
+      cout << "data:" << data << endl;
+
+      cerr << "Unknown data type" << endl;
+
+    }
+
+    cout << "Fill Tree" << endl;
+
+   
+
     tree->Fill();
   }
 

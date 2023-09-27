@@ -1,5 +1,5 @@
 #include "decorder.h"
-
+//-------------------------------------------------
 using namespace std;
 int debug = 2; // 1 = light, 2 = detail, 3 = verbose
 
@@ -261,14 +261,15 @@ int main(int argc, char** argv) {
   }
 
   string dat_filename = string(argv[1]);
+
   double mean = 0;
   double RMS = 0;
   int cn; // ?
   int cn_; // ?
   int ch; // ?
   bool isRO;
-  
-  ifstream f_dat(dat_filename.c_str(),ios::binary);
+
+  ifstream f_dat(dat_filename.c_str(),ios::binary)
   if (!f_dat.is_open()) {
     cerr << "no file: " << dat_filename << endl;
     return -1;
@@ -283,9 +284,6 @@ int main(int argc, char** argv) {
   ADC hgadc;
   ADC lgadc;
   long eventID;
-  
-  // Scaler class
-  
   
   tree->Branch("eventID", &eventID,    "event/L");
   tree->Branch("hgadc",   &hgadc,  "value[64]/I");
