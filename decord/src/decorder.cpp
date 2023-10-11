@@ -284,12 +284,15 @@ int main(int argc, char** argv) {
   ADC hgadc;
   ADC lgadc;
   long eventID;
+
+  stp this_stp;
+
   
   tree->Branch("eventID", &eventID,    "event/L");
   tree->Branch("hgadc",   &hgadc,  "value[64]/I");
   tree->Branch("lgadc",   &lgadc,  "value[64]/I");
-  tree->Branch("ncycle", &ncycle, "ncycle/L");
-  tree->Branch("ntdc", &ntdc, "ntdc/L");
+  tree->Branch("ncycle", &this_stp.ncycle, "ncycle/L");
+  tree->Branch("ntdc", &this_stp.ntdc, "ntdc/L");
   
   UInt_t data_big_endian;
   UInt_t data;
@@ -302,7 +305,6 @@ int main(int argc, char** argv) {
 
   sm_ sm = first;
   vector<stp> stp_vec;
-  stp this_stp;
 
   while (!f_dat.eof()) {
     f_dat.read((char*)&data_big_endian, sizeof(int));
@@ -476,17 +478,17 @@ int main(int argc, char** argv) {
   this_stp.ntdc = data & 0x00ffffff;
   sm = other;
 
-  //stp_vec.push_back(this_stp);
+  stp_vec.push_back(this_stp);
 
       } if (sm == other) { // STPデータが最後の状態であることを確認
         //cout << "other" << endl;
-        if (eventID < 9999){
-          stp_vec.push_back(this_stp);
+        if (eventID < 9999 ){
+          //stp_vec.push_back(this_stp);
           tree->Fill();
         }
 
         else{
-          stp_vec.push_back(this_stp);
+          //stp_vec.push_back(this_stp);
           tree->Fill();
           break;
         }

@@ -290,7 +290,7 @@ int main(int argc, char** argv) {
   tree->Branch("eventID", &eventID,    "event/L");
   tree->Branch("hgadc",   &hgadc,  "value[64]/I");
   tree->Branch("lgadc",   &lgadc,  "value[64]/I");
-  tree->Branch("cyclenum", &this_stp.ncycle, "value/I");
+  tree->Branch("ncycle", &this_stp.ncycle, "value/I");
   tree->Branch("tdcvalue", &this_stp.ntdc, "value/I");
   
   UInt_t data_big_endian;
